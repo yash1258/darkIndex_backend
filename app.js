@@ -13,6 +13,8 @@ mongoose.connect("mongodb://localhost/darkIndex", {
 });
 mongoose.set("useCreateIndex", true);
 
+require("./services/auth");
+
 var app = express();
 
 // view engine setup

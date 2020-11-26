@@ -9,13 +9,17 @@ const UserSchema = new Schema({
   creationDate: Date,
 });
 
-UserSchema.pre("save", async (next) => {
-  const user = this;
-  if (user.isModified("password")) {
-    user.password = await bcrypt.hash(this.password, 10);
-  }
+UserSchema.pre("save", async function (next) {
+  console.log(this);
+  const hash = await bcrypt.hash(this.password, 10);
+  this.password = hash;
   next();
 });
+UserSchema.methods.isValidPassword = async function (password) {
+  const user = this;
+  const compare = await bcrypt.compare(password, user.password);
+  return compare;
+};
 
 const User = model("User", UserSchema);
 module.exports = User;
