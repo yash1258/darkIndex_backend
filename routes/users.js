@@ -23,9 +23,9 @@ router.post("/login", async (req, res, next) => {
         if (error) return next(error);
         const body = { _id: user._id, email: user.email };
         const token = jwt.sign({ user: body }, "INDEX*DARK", {
-          expiresIn: "1000000",
+          expiresIn: "1h",
         });
-        return res.json({ token });
+        return res.json({ id_token: token, expires_at: "1" });
       });
     } catch (error) {
       return next(error);
@@ -34,17 +34,16 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/register", async (req, res) => {
-  console.log(req.body);
   try {
     let user = await User.create({
-      name: req.body.name,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       email: req.body.email,
       phoneNumber: req.body.phoneNumber,
       password: req.body.password,
       creationDate: new Date(),
     });
-    console.log(user);
-    res.json(user);
+    res.json({ message: "Registration Successfull", user: user });
   } catch (err) {
     console.log(err);
     res.status(400).json(err);
